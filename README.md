@@ -1,0 +1,2 @@
+# Speedlogqrcode
+Speedlog qrcode recognition
