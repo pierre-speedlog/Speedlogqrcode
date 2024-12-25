@@ -1,61 +1,44 @@
-from fastapi import FastAPI, UploadFile, File
-from pyzbar.pyzbar import decode
-from PIL import Image
-import io
-import json
+from flask import Flask, request
 import requests
+from pyzbar.pyzbar import decode
+import cv2
+import io
+import numpy as np
 
-app = FastAPI()
+app = Flask(__name__)
 
 
-@app.post("/recognize_qrcode")
-async def recognize_qrcode(image: UploadFile = File(...)):
+def read_qr_code_from_url(url):
     """
-    接收上传的图片文件，识别其中二维码信息的接口，返回格式尽量类似ChatGPT交互响应格式
+    从给定的网络路径读取图像并识别其中的二维码内容
     """
     try:
-        # 读取上传的图片文件内容并转换为Image对象
-        image_data = await image.read()
-        image = Image.open(io.BytesIO(image_data))
-
-        # 利用pyzbar库解码二维码
-        decoded_objects = decode(image)
-
-        results = []
-        if decoded_objects:
-            for obj in decoded_objects:
-                result = {
-                    "type": obj.type,
-                    "data": obj.data.decode('utf-8')
-                }
-                results.append(result)
-
-        # 构造类似ChatGPT交互的响应格式（简单示例）
-        response = {
-            "choices": [
-                {
-                    "message": {
-                        "content": json.dumps(results, indent=4) if results else "未识别到二维码内容",
-                        "role": "assistant"
-                    }
-                }
-            ]
-        }
-
-        return response
+        response = requests.get(url, stream=True)
+        if response.status_code == 200:
+            image_bytes = io.BytesIO(response.content)
+            image = cv2.imdecode(np.frombuffer(image_bytes.read(), np.uint8), 1)
+            decoded_objects = decode(image)
+            if decoded_objects:
+                return decoded_objects[0].data.decode('utf-8')
+            return "未识别到二维码内容"
+        return f"获取图像失败，状态码: {response.status_code}"
     except Exception as e:
-        print(f"识别二维码出现错误: {str(e)}")
-        return {
-            "choices": [
-                {
-                    "message": {
-                        "content": f"出现错误: {str(e)}",
-                        "role": "assistant"
-                    }
-                }
-            ]
-        }
+        return f"出现错误: {str(e)}"
 
-if __name__ == "__main__":
-    import uvicorn
-    uvicorn.run(app, host="0.0.0.0", port=8888)
+
+@app.route('/qr_code_recognition', methods=['POST'])
+def qr_code_recognition():
+    """
+    接收POST请求，请求中应包含图片网络路径信息，返回二维码文本内容
+    """
+    data = request.get_json()
+    if 'image_url' in data:
+        image_url = data['image_url']
+        result = read_qr_code_from_url(image_url)
+        return {"text": result}
+    return {"text": "请求数据中缺少image_url字段"}
+
+
+if __name__ == '__main__':
+    app.run(debug=True, host='0.0.0.0', port=8888)
+    
