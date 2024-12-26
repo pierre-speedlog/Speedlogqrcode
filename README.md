@@ -1,5 +1,5 @@
 # SenseVoice-OneApi
-基于SenseVoice的funasr版本进行的api发布，可以无缝对接oneapi
+基于python的二维码funasr版本进行的api发布，可以无缝对接oneapi
 
 ### 模型下载
 通过modelscope下载iic/SenseVoiceSmall和iic/speech_fsmn_vad_zh-cn-16k-common-pytorch
