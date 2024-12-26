@@ -1,13 +1,8 @@
 # Speedlogqrcode-OneApi
 基于python的二维码pyzbar版本进行的api发布，可以无缝对接oneapi
 
-### 模型下载
-通过modelscope下载iic/SenseVoiceSmall和iic/speech_fsmn_vad_zh-cn-16k-common-pytorch
-```
-pip install modelscope
-modelscope download --model iic/SenseVoiceSmall --local_dir ./iic/SenseVoiceSmall
-modelscope download --model iic/speech_fsmn_vad_zh-cn-16k-common-pytorch --local_dir ./iic/speech_fsmn_vad_zh-cn-16k-common-pytorch
-```
+### 源码下载
+git clone https://github.com/pierre-speedlog/Speedlogqrcode.git
 
 ### Docker部署运行
 ```
