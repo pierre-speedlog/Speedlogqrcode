@@ -1,4 +1,4 @@
-# SenseVoice-OneApi
+# Speedlogqrcode-OneApi
 基于python的二维码funasr版本进行的api发布，可以无缝对接oneapi
 
 ### 模型下载
@@ -46,7 +46,7 @@ curl --request POST 'http://127.0.0.1:8000/v1/audio/transcriptions' \
 
 ### 接入One Api
 渠道类型使用OpenAI或者自定义渠道
-模型填入whisper-1
+模型填入Speedlogqrcode-1
 代理填写对应的地址：http://ip:8000
 
 ### 终语
