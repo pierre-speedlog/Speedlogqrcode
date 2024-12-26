@@ -26,7 +26,7 @@ def read_qr_code_from_url(url):
         return f"出现错误: {str(e)}"
 
 
-@app.route('/qr_code_recognition', methods=['POST'])
+@app.route('/speedlog_qr_code_recognition', methods=['POST'])
 def qr_code_recognition():
     """
     接收POST请求，请求中应包含图片网络路径信息，返回二维码文本内容
